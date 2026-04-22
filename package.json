@@ -1,0 +1,22 @@
+{
+  "name": "warehouse-os",
+  "version": "3.0.0",
+  "description": "Warehouse OS — AI Warehouse Management System with Express + SQLite backend",
+  "private": true,
+  "scripts": {
+    "dev": "npx vite",
+    "server": "node server/server.js",
+    "start": "npx concurrently -n API,UI -c blue,green \"node server/server.js\" \"npx vite\"",
+    "build": "npx vite build",
+    "preview": "npx vite preview"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "vite": "^6.0.0"
+  }
+}

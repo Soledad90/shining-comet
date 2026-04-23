@@ -110,3 +110,35 @@ export async function getInventoryKPI() {
 export async function getSupplierAnalytics() {
   return request('/analytics/suppliers');
 }
+
+// ============================================
+// AI AGENT OS
+// ============================================
+
+export async function sendAICommand(input) {
+  return request('/ai/command', { method: 'POST', body: { input } });
+}
+
+export async function getAIAgents() {
+  return request('/ai/agents');
+}
+
+export async function getAILogs() {
+  return request('/ai/logs');
+}
+
+export async function getAISchedule() {
+  return request('/ai/schedule');
+}
+
+export async function runAIJob(id) {
+  return request('/ai/schedule/run', { method: 'POST', body: { id } });
+}
+
+export async function getProductionSummary() {
+  return request('/production/summary');
+}
+
+export async function getComplianceStatus() {
+  return request('/compliance/status');
+}

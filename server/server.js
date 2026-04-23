@@ -6,6 +6,7 @@
 const express = require('express');
 const cors = require('cors');
 const db = require('./db');
+const aiEngine = require('./ai-engine');
 
 const app = express();
 const PORT = 3001;
@@ -381,6 +382,87 @@ app.post('/api/sales-orders/receive', (req, res) => {
 
     db.prepare('UPDATE sales_orders SET imported_qty = ? WHERE id = ?').run(totalImported, so.id);
     res.json({ success: true, message: `Đã cập nhật số lượng nhập SO. Đạt ${totalImported}/${so.qty}` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============================================
+// AI AGENT OS ENDPOINTS
+// ============================================
+
+// POST /api/ai/command — Process AI commands
+app.post('/api/ai/command', async (req, res) => {
+  try {
+    const { input } = req.body;
+    if (!input) return res.status(400).json({ error: 'input is required' });
+    const result = await aiEngine.processCommand(input);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/ai/agents — Get agent statuses
+app.get('/api/ai/agents', (req, res) => {
+  try {
+    // In a real app, this would be dynamic. For now, returning static from engine
+    res.json(Object.values(aiEngine.agents).map(a => ({
+      ...a,
+      status: 'ONLINE',
+      last_active: new Date().toISOString()
+    })));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/ai/logs — Get agent activity logs
+app.get('/api/ai/logs', (req, res) => {
+  try {
+    const rows = db.prepare('SELECT * FROM agent_logs ORDER BY created_at DESC LIMIT 50').all();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/ai/schedule — Get scheduled jobs
+app.get('/api/ai/schedule', (req, res) => {
+  try {
+    const rows = db.prepare('SELECT * FROM scheduled_jobs').all();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/ai/schedule/run — Manually run a job
+app.post('/api/ai/schedule/run', async (req, res) => {
+  try {
+    const { id } = req.body;
+    await aiEngine.runJob(id);
+    res.json({ success: true, message: 'Job started' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/production/summary
+app.get('/api/production/summary', (req, res) => {
+  try {
+    const rows = db.prepare('SELECT * FROM production_plans ORDER BY created_at DESC LIMIT 10').all();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/compliance/status
+app.get('/api/compliance/status', (req, res) => {
+  try {
+    const rows = db.prepare('SELECT * FROM compliance_checks ORDER BY created_at DESC LIMIT 10').all();
+    res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -7,6 +7,9 @@ import { renderDashboard, initDashboard } from './views/dashboard.js';
 import { renderWorkflows, initWorkflows } from './views/workflows.js';
 import { renderInventory, initInventory } from './views/inventory.js';
 import { renderAgents, initAgents } from './views/agents.js';
+import { renderAICommand, initAICommand } from './views/ai_command.js';
+import { renderCompliance, initCompliance } from './views/compliance.js';
+import { renderProduction, initProduction } from './views/production.js';
 import { renderPlanning, initPlanning } from './views/planning.js';
 import { renderSuppliers, initSuppliers } from './views/suppliers.js';
 import { renderSalesOrders, initSalesOrders } from './views/sales_orders.js';
@@ -25,14 +28,17 @@ const toastContainer = document.getElementById('toastContainer');
 
 // === Page Definitions ===
 const pages = {
-  dashboard: { title: 'Dashboard', render: renderDashboard, init: initDashboard },
-  planning:  { title: 'Kế hoạch Nhập/QC', render: renderPlanning, init: (toast) => initPlanning(toast) },
-  workflows: { title: 'Workflows', render: renderWorkflows, init: (toast) => initWorkflows(toast) },
-  inventory: { title: 'Tồn Kho', render: renderInventory, init: (toast) => initInventory(toast) },
-  suppliers: { title: 'Nhà Cung Ứng', render: renderSuppliers, init: (toast) => initSuppliers(toast) },
+  dashboard:    { title: 'Dashboard', render: renderDashboard, init: initDashboard },
+  ai_command:   { title: 'AI OS Command Center', render: renderAICommand, init: initAICommand },
+  compliance:   { title: 'Compliance & Audit', render: renderCompliance, init: initCompliance },
+  production:   { title: 'Production Monitor', render: renderProduction, init: initProduction },
+  planning:     { title: 'Kế hoạch Nhập/QC', render: renderPlanning, init: (toast) => initPlanning(toast) },
+  workflows:    { title: 'Workflows', render: renderWorkflows, init: (toast) => initWorkflows(toast) },
+  inventory:    { title: 'Tồn Kho', render: renderInventory, init: (toast) => initInventory(toast) },
+  suppliers:    { title: 'Nhà Cung Ứng', render: renderSuppliers, init: (toast) => initSuppliers(toast) },
   sales_orders: { title: 'Đơn Hàng SO', render: renderSalesOrders, init: (toast) => initSalesOrders(toast) },
-  agents:    { title: 'Agents', render: renderAgents, init: initAgents },
-  logs:      { title: 'Nhật Ký', render: renderLogs, init: initLogs },
+  agents:       { title: 'Old Agents', render: renderAgents, init: initAgents },
+  logs:         { title: 'Nhật Ký', render: renderLogs, init: initLogs },
 };
 
 // === Navigation ===

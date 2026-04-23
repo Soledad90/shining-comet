@@ -104,6 +104,28 @@ export function renderDashboard() {
         </div>
       </div>
 
+      <!-- AI OS Status -->
+      <div class="card animate-fade delay-3">
+        <div class="card-header">
+          <div class="card-title">🤖 AI OS Status</div>
+          <div class="ai-badge"><div class="ai-pulse"></div><span>ACTIVE</span></div>
+        </div>
+        <div style="padding: 10px 0;">
+          <div class="prod-line-item">
+            <div class="prod-stats"><span>Compliance Score</span><span>95/100</span></div>
+            <div class="prod-progress-bg"><div class="prod-progress-fill emerald" style="width: 95%"></div></div>
+          </div>
+          <div class="prod-line-item">
+            <div class="prod-stats"><span>Production Efficiency</span><span>120%</span></div>
+            <div class="prod-progress-bg"><div class="prod-progress-fill" style="width: 100%; background: var(--accent-blue);"></div></div>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; display: flex; justify-content: space-between;">
+            <span>Orchestrator: ACTIVE</span>
+            <span>Uptime: 100%</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Supplier Analytics -->
       <div class="card animate-fade delay-4">
         <div class="card-header">

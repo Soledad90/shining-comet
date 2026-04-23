@@ -81,6 +81,40 @@ db.exec(`
   );
   
   CREATE INDEX IF NOT EXISTS idx_so_number ON sales_orders(so_number);
+
+  -- AI AGENT OS TABLES
+  CREATE TABLE IF NOT EXISTS agent_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    agent_called TEXT,
+    status TEXT,
+    verification TEXT,
+    action_log TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS production_plans (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    plan_vs_actual TEXT,
+    delay TEXT,
+    issue TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS compliance_checks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    compliance_score INTEGER,
+    risk_level TEXT,
+    issues_json TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS scheduled_jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    task_name TEXT,
+    interval_time TEXT,
+    last_run DATETIME,
+    status TEXT DEFAULT 'IDLE'
+  );
 `);
 
 try {
@@ -113,6 +147,11 @@ function seedDatabase() {
   const insertPlan = db.prepare(`
     INSERT INTO import_plan (po_number, supplier, sku, item_name, qty, received_qty, qc_status, eta_date, status)
     VALUES (@po_number, @supplier, @sku, @item_name, @qty, @received_qty, @qc_status, @eta_date, @status)
+  `);
+
+  const insertJob = db.prepare(`
+    INSERT INTO scheduled_jobs (task_name, interval_time, status)
+    VALUES (@task_name, @interval_time, 'IDLE')
   `);
 
   const hasSuppliers = db.prepare('SELECT COUNT(*) as cnt FROM suppliers').get().cnt > 0;
@@ -198,6 +237,12 @@ function seedDatabase() {
     }
     if (insertSO) {
       for (const so of salesOrdersList) insertSO.run(so);
+    }
+
+    const jobCount = db.prepare('SELECT COUNT(*) as cnt FROM scheduled_jobs').get().cnt;
+    if (jobCount === 0) {
+      insertJob.run({ task_name: 'kiểm tra tồn kho và QC', interval_time: '5m' });
+      insertJob.run({ task_name: 'tạo báo cáo tổng hợp', interval_time: '1h' });
     }
   });
 
